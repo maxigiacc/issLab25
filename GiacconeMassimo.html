@@ -287,6 +287,31 @@ Realizzazione di una pagina HTML che funga da dispostivo di input-ouput evoluto 
     <li><strong>Output visivo:</strong> Visualizzare in tempo reale lo stato della griglia in base alle regole del gioco.</li>
     <li><strong>Comunicazione:</strong> Stabilire un canale bidirezionale tra la pagina HTML e l'applicazione Java per sincronizzare input e output.</li>
   </ul>
+
+<h2>Diario di bordo</h2> 
+<p>Partendo dal progetto fatto in aula fornito dal prof, l'idea è quella di rendere più generale possibile le cose. Attualmente la struttura della griglia è basata su degli interi, per le dimensioni di questa, e su due matrici di interi che determinano la griglia attuale e quella successiva. </p>
+
+<p>Creo la classe <b>Cell</b> che rappresenta ogni singola cella della griglia, con un unica proprietà booleana (<i>stato</i>), per individuare la situazione di questa. In questo modo non posso avere alcun fraintendimento: 
+    
+<ul>
+    <li><i>false</i> = morta</li>
+    <li><i>true</i> = viva</li>
+</ul>
+Inserisco dei metodi getter e setter per recuperare e modificare questo valore, in base all'andamento e alle regole del gioco.</p>
+
+
+<p>
+    Dopo aver definito la cella, creo la classe <i>Grid</i>, che ora gestisce la matrice di celle.
+    Ogni cella della griglia è ora un oggetto Cell, invece di un semplice numero intero.
+    
+    Principali responsabilità di Grid:
+    <ul>
+        <li>Inizializzare la griglia con celle morte di default</li>
+        <li>Fornire metodi per ottenere e modificare le celle</li>
+        <li>Permettere la copia della griglia per l’evoluzione delle generazioni.</li>
+    </ul>
+
+</p>
 <h2>Test plans</h2> 
 
 
