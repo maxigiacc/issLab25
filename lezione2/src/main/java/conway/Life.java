@@ -1,6 +1,7 @@
 package conway;
 
-
+import conway.Cell;
+import conway.Grid;
 /*
  * Il core di game of life
  * Non ha dipendenze da dispositivi di input/output
@@ -11,8 +12,8 @@ public class Life {
     //La struttura
     private int rows=0;
     private int cols=0;
-    private static int[][] grid;
-    private static int[][] nextGrid;
+    private Grid grid;
+    private Grid nextGrid;
  
     public Life( int rowsNum, int colsNum ) {
         this.rows   = rowsNum;
@@ -28,18 +29,18 @@ public class Life {
     }
 
     protected void  createGrids() {
-        grid     = new int[rows][cols];
-        nextGrid = new int[rows][cols];   
+        grid     = new Grid(rows, cols);
+        nextGrid = new Grid(rows, cols);;   
         //CommUtils.outyellow("Life | initializeGrids done");
     }
 
     protected void resetGrids() {
          for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                grid[i][j]     = 0;
+            	grid.setCellState(i, j, false);
                 //setCellState(   i,   j, false );
                 //outdev.setCellColor(  i,  j, grid[i][j] );
-                nextGrid[i][j] = 0;
+            	nextGrid.setCellState(i, j, false);
             }
         }
         //CommUtils.outyellow("Life | initGrids done");
@@ -49,28 +50,28 @@ public class Life {
     protected int countNeighborsLive(int row, int col) {
         int count = 0;
         if (row-1 >= 0) {
-            if (grid[row-1][col] == 1) count++;
+            if (grid.getCell(row - 1, col).isStato()) count++;
         }
         if (row-1 >= 0 && col-1 >= 0) {
-            if (grid[row-1][col-1] == 1) count++;
+            if (grid.getCell(row - 1, col - 1).isStato()) count++;
         }
         if (row-1 >= 0 && col+1 < cols) {
-            if (grid[row-1][col+1] == 1) count++;
+            if (grid.getCell(row - 1, col + 1).isStato()) count++;
         }
         if (col-1 >= 0) {
-            if (grid[row][col-1] == 1) count++;
+            if (grid.getCell(row, col - 1).isStato()) count++;
         }
         if (col+1 < cols) {
-            if (grid[row][col+1] == 1) count++;
+            if (grid.getCell(row, col + 1).isStato()) count++;
         }
         if (row+1 < rows) {
-            if (grid[row+1][col] == 1) count++;
+            if (grid.getCell(row + 1, col).isStato()) count++;
         }
         if (row+1 < rows && col-1 >= 0) {
-            if (grid[row+1][col-1] == 1) count++;
+            if (grid.getCell(row + 1, col - 1).isStato()) count++;
         }
         if (row+1 < rows && col+1 < cols) {
-            if (grid[row+1][col+1] == 1) count++;
+            if (grid.getCell(row + 1, col + 1).isStato()) count++;
         }
         return count;
     }
@@ -82,7 +83,7 @@ public class Life {
             for (int j = 0; j < cols; j++) {
                 int n = countNeighborsLive(i,j);
                 applyRules(i, j, n);
-                outdev.displayCell( ""+grid[i][j] );
+                outdev.displayCell("" + ((grid.getCell(i, j).isStato()) ? "0" : "1"));
             }
             outdev.displayCell("\n");  //Va tolta nel caso della GUI?
         }
@@ -93,9 +94,9 @@ public class Life {
     protected void copyAndResetGrid( IOutDev outdev ) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                grid[i][j] = nextGrid[i][j];
+            	grid.setCellState(i, j, nextGrid.getCell(i, j).isStato());
                 //outdev.displayCell( ""+grid[i][j] );
-                nextGrid[i][j] = 0;
+            	nextGrid.setCellState(i, j, false);
             }
         }
     }
@@ -103,33 +104,31 @@ public class Life {
     protected void applyRules(int row, int col, int numNeighbors) {
         //int numNeighbors = countNeighborsLive(row, col);
         //CELLA VIVA
-        if (grid[row][col] == 1) {
+        if (grid.getCell(row, col).isStato()) {
             if (numNeighbors < 2) { //muore per isolamento
-                nextGrid[row][col] = 0;
+            	nextGrid.setCellState(row, col, false);
             } else if (numNeighbors == 2 || numNeighbors == 3) { //sopravvive
-                nextGrid[row][col] = 1;
+            	nextGrid.setCellState(row, col, true);
             } else if (numNeighbors > 3) { //muore per sovrappopolazione
-                nextGrid[row][col] = 0;
+            	nextGrid.setCellState(row, col, false);
             }
         }
         //CELLA MORTA
-        else if (grid[row][col] == 0) {
+        else if (grid.getCell(row, col).isStato() == false) {
             if (numNeighbors == 3) { //riproduzione
-                nextGrid[row][col] = 1;
+            	nextGrid.setCellState(row, col, true);
             }
         }
         //CommUtils.outgreen("Life applyRules " + nextGrid   );
     }
 
     public void switchCellState(int i, int j){
-        if( grid[i][j] == 0) grid[i][j] = 1;       
-        else if( grid[i][j] == 1) grid[i][j] = 0;  
+        if( grid.getCell(i, j).isStato() == false) grid.getCell(i, j).toggleStato();     
+        else if( grid.getCell(i, j).isStato() == true) grid.getCell(i, j).toggleStato();
     }
 
-    public  int getCellState( int i, int j  ) {
-        return   grid[i][j];
+    public  Cell getCellState( int i, int j  ) {
+        return   grid.getCell(i, j);
     }
- 
-
 
 }

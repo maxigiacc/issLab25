@@ -44,7 +44,7 @@ public class LifeController {
 	public void displayGrid() {
 		for (int i = 0; i < life.getRowsNum(); i++) {
 			for (int j = 0; j < life.getColsNum(); j++) {
-				if (life.getCellState(i,j) == 0) {
+				if (!life.getCellState(i,j).isStato()) {
 					outdev.displayCell("0");
                 } else {
                 	outdev.displayCell("1");
